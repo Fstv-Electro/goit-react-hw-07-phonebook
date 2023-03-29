@@ -1,5 +1,5 @@
-import { useSelector } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -8,12 +8,19 @@ import ContactForm from 'components/ContactForm/ContactForm';
 import ContactList from 'components/Contacts/ContactList';
 import Filter from 'components/Filter';
 import Section from 'components/Section';
-import { getContacts } from 'redux/selectors';
+import { useEffect } from 'react';
+import * as contactsOperations from 'redux/operations';
+import * as selectors from 'redux/selectors';
 
 
-export default function App({title}) {
+const App = ({title}) => {
+  const dispatch = useDispatch();
+  const items = useSelector(selectors.getContacts);
+  const isLoading = useSelector(selectors.getLoadStatus);
 
-  const contacts = useSelector(getContacts);
+  useEffect(() => {
+    dispatch(contactsOperations.fetchContacts());
+  }, [dispatch]);
 
   return (
     <Container>
@@ -23,16 +30,23 @@ export default function App({title}) {
       </Section>
 
       <Section title="Contacts">
-        {contacts.length > 0 ? (
+        {!isLoading && items.length === 0 && (
+          <div style={{ color: 'black', fontSize: '20px'}}>U don't have contacts yet!</div>
+        )}
+        {items.length > 0 && (
           <>
             <Filter />
-            <ContactList/>
+            <ContactList />
           </>
-        ) : (
-            <div style={{ color: 'black', fontSize: '20px'}}>U don't have contacts yet!</div>
         )}
       </Section>
       <ToastContainer autoClose={ 3000 } theme={'colored'} />
     </Container>
   );
+};
+
+export default App;
+
+App.propTypes = {
+  title: PropTypes.string,
 };

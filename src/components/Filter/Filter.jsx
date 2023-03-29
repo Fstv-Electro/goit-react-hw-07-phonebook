@@ -2,12 +2,12 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteButton from "components/DeleteButton";
 import { Input, FilterWrapper, Label } from "./Filter.styled";
-import { getFilter } from "redux/selectors";
-import { setFilter, resetFilter } from "redux/contactsSlice";
+import * as selectors from "redux/selectors";
+import { setFilter, resetFilter } from "redux/filterSlice";
 
 const Filter = () => {
     const dispatch = useDispatch();
-    const filter = useSelector(getFilter);
+    const filter = useSelector(selectors.getFilter);
 
     const onChange = e => dispatch(setFilter(e.target.value));
 

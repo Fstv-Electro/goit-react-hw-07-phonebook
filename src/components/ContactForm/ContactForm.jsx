@@ -1,15 +1,17 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, ErrorMessage } from 'formik';
-import { nanoid } from 'nanoid';
 import {
     FormField, Input, Label
 } from './ContactForm.styled';
 import Button from 'components/Button';
-import { addContact } from 'redux/contactsSlice';
+import * as selectors from 'redux/selectors';
+import * as contactsOperations from 'redux/operations';
+import { toast } from 'react-toastify';
 
 export const ContactForm = () => {
     const dispatch = useDispatch();
+    const contacts = useSelector(selectors.getContacts);
 
     const initialValues = {
         name: '',
@@ -17,12 +19,21 @@ export const ContactForm = () => {
     };
     
     const handleSubmit = (contacts, { resetForm }) => {
-        const contact = {
-            id: nanoid(),
-            ...contacts,
-        };
-        dispatch(addContact(contact));
+        const { name } = contacts;
+        const newName = checkName(name);
+
+        if (newName) {
+            toast.error(`${name} already in contacts`);
+            return;
+        }
+        dispatch(contactsOperations.addContact(contacts));
+        toast.success(`${contacts.name} added to contacts`);
         resetForm();
+    };
+
+    const checkName = newName => {
+        const toLowerName = newName.toLocaleLowerCase();
+        return contacts.find(({ name }) => name.toLocaleLowerCase() === toLowerName);
     };
 
     return (
