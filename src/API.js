@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://641ae0ae9b82ded29d43ff49.mockapi.io';
+axios.defaults.baseURL = 'https://641ae0ae9b82ded29d43ff49.mockapi.io/contacts';
 
 export const fetchAllContacts = async () => {
   const res = await axios.get('/contacts');
@@ -13,5 +13,5 @@ export const postContact = async newContact => {
 };
 
 export const deleteContact = async id => {
-  await axios.delete(`/contact/${id}`);
+  await axios.delete(`/contacts/${id}`);
 };
